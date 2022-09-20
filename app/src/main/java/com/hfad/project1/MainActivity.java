@@ -182,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("ResourceType")
     public void onClickTV(View view){
 
+        System.out.println(view.getId());
+        System.out.println("GameStatus: " + gameStatus);
 
         TextView tv = (TextView) view;
         int n = findIndexOfCellTextView(tv);
@@ -189,13 +191,23 @@ public class MainActivity extends AppCompatActivity {
         int j = n%COLUMN_COUNT;
         //tv.setText(String.valueOf(i)+String.valueOf(j));
 
+
         if(gameStatus==1 || gameStatus==0){
             System.out.println("apple");
             clickAgain = true; //i.e. they click the cell to show results page
         }
 
+        if(gameStatus==0) {
+            if (clickAgain) {
+                Intent intent = new Intent(this, ResultsActivity.class);
+                intent.putExtra("gameStatus", gameStatus);
+                intent.putExtra("seconds", clockCount);
+                startActivity(intent);
+            }
+        }
 
-         if(clickAgain==false && modeGame==true && tv.getId()==5 && tv.getCurrentTextColor()==Color.CYAN){
+
+         else if(clickAgain==false && modeGame==true && tv.getId()==5 && tv.getCurrentTextColor()==Color.CYAN){
             tv.setText(R.string.flag);
             countFlag--;
             tv.setTextColor(Color.MAGENTA);
@@ -214,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
              flagCount.setText(String.valueOf(countFlag));
          }
 
-        else if(tv.getId()==5 && modeGame==false){
+        else if(clickAgain==false && tv.getId()==5 && modeGame==false){
 
              int minesRevealed = 0;
              int index=0;
@@ -238,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
 
             gameStatus = 0;
 
+            System.out.print("LOST");
+
 
 
             if(clickAgain) {
@@ -258,14 +272,6 @@ public class MainActivity extends AppCompatActivity {
             playAgain.setVisibility(View.VISIBLE);*/
         }
 
-        else if(gameStatus==0){
-             if(clickAgain) {
-                 Intent intent = new Intent(this, ResultsActivity.class);
-                 intent.putExtra("gameStatus", gameStatus);
-                 intent.putExtra("seconds", clockCount);
-                 startActivity(intent);
-             }
-         }
         /*else if (tv.getCurrentTextColor() == Color.GRAY) {
             tv.setTextColor(Color.GREEN);
             tv.setBackgroundColor(Color.GRAY);
@@ -322,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
 
         */
 
-        else if(modeGame==false && (tv.getId()!=9)){
+        else if(modeGame==false && (tv.getId()!=9) && tv.getId()!=5) {
 
 
             tv.setTextColor(Color.GRAY);
@@ -331,21 +337,19 @@ public class MainActivity extends AppCompatActivity {
             int parent = n;
 
 
-
             checkNeighbors.add(n);
 
 
-
             System.out.println("wow");
-             System.out.println(checkNeighbors.get(0));
+            System.out.println(checkNeighbors.get(0));
 
-            while(checkNeighbors.isEmpty()==false){
+            while (checkNeighbors.isEmpty() == false) {
                 revealCells(checkNeighbors.get(0));
                 //System.out.println("index: " + checkNeighbors.get(0));
             }
 
 
-             System.out.println("wow2");
+            System.out.println("wow2");
 
 
            /*  if(clickedAllCells()==true){
@@ -385,12 +389,7 @@ public class MainActivity extends AppCompatActivity {
         */
 
 
-
-
-         }
-
-
-        if(clickedAllCells()==true){
+            if (clickedAllCells() == true) {
                    /* grid.setVisibility(View.INVISIBLE);
                     gameLost.setVisibility(View.INVISIBLE);
                     gameWon.setVisibility(View.VISIBLE);
@@ -402,41 +401,39 @@ public class MainActivity extends AppCompatActivity {
                     playAgain.setVisibility(View.VISIBLE);
                     */
 
-            int minesRevealed = 0;
-            int index=0;
+                int minesRevealed = 0;
+                int index = 0;
 
-            while(minesRevealed!=4){
-                if(cell_tvs.get(index).getId()==5){
-                    cell_tvs.get(index).setText(R.string.mine);
-                    cell_tvs.get(index).setBackgroundColor(Color.LTGRAY);
-                    minesRevealed++;
+                while (minesRevealed != 4) {
+                    if (cell_tvs.get(index).getId() == 5) {
+                        cell_tvs.get(index).setText(R.string.mine);
+                        cell_tvs.get(index).setBackgroundColor(Color.LTGRAY);
+                        minesRevealed++;
+                    }
+                    index++;
                 }
-                index++;
+
+                for (int z = 0; z < 80; z++) { //set all cells background to grey for win or lose
+                    cell_tvs.get(z).setBackgroundColor(Color.LTGRAY);
+                    cell_tvs.get(z).setTextColor(Color.GRAY);
+                }
+
+
+                running = false;
+
+
+                gameStatus = 1;
+
+
+                if (clickAgain) {
+                    Intent intent = new Intent(this, ResultsActivity.class);
+                    intent.putExtra("gameStatus", gameStatus);
+                    intent.putExtra("seconds", clockCount);
+
+                    startActivity(intent);
+                }
+
             }
-
-            for(int z=0; z<80; z++){ //set all cells background to grey for win or lose
-                cell_tvs.get(z).setBackgroundColor(Color.LTGRAY);
-                cell_tvs.get(z).setTextColor(Color.GRAY);
-            }
-
-
-            running = false;
-
-
-
-
-            gameStatus = 1;
-
-
-
-            if(clickAgain) {
-                Intent intent = new Intent(this, ResultsActivity.class);
-                intent.putExtra("gameStatus", gameStatus);
-                intent.putExtra("seconds", clockCount);
-
-                startActivity(intent);
-            }
-
         }
     }
 
@@ -631,7 +628,7 @@ public class MainActivity extends AppCompatActivity {
             mineCount++;
 
             cell_tvs.get(index).setText("");
-           // cell_tvs.get(index).setText(R.string.mine);
+            cell_tvs.get(index).setText(R.string.mine);
             // System.out.println(cell_tvs.get(index).getText());
 
             cell_tvs.get(index).setTextColor(Color.CYAN);
