@@ -821,8 +821,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//finished version 5
-//lost game fixed
+//finished version 6
+//DFS complete, bugs fixed
 
 
 
