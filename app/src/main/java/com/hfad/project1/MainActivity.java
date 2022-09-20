@@ -197,17 +197,9 @@ public class MainActivity extends AppCompatActivity {
             clickAgain = true; //i.e. they click the cell to show results page
         }
 
-        if(gameStatus==0) {
-            if (clickAgain) {
-                Intent intent = new Intent(this, ResultsActivity.class);
-                intent.putExtra("gameStatus", gameStatus);
-                intent.putExtra("seconds", clockCount);
-                startActivity(intent);
-            }
-        }
 
 
-         else if(clickAgain==false && modeGame==true && tv.getId()==5 && tv.getCurrentTextColor()==Color.CYAN){
+         if(clickAgain==false && modeGame==true && tv.getId()==5 && tv.getCurrentTextColor()==Color.CYAN){
             tv.setText(R.string.flag);
             countFlag--;
             tv.setTextColor(Color.MAGENTA);
@@ -261,34 +253,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
 
-           /* grid.setVisibility(View.INVISIBLE);
-            gameLost.setVisibility(View.VISIBLE);
-            gameWon.setVisibility(View.INVISIBLE);
-            flagCount.setVisibility(View.INVISIBLE);
-            flag.setVisibility(View.INVISIBLE);
-            clock.setVisibility(View.INVISIBLE);
-            digMode.setVisibility(View.INVISIBLE);
-            flagMode.setVisibility(View.INVISIBLE);
-            playAgain.setVisibility(View.VISIBLE);*/
+
+        }
+        else if(gameStatus==0) {
+            if (clickAgain) {
+                Intent intent = new Intent(this, ResultsActivity.class);
+                intent.putExtra("gameStatus", gameStatus);
+                intent.putExtra("seconds", clockCount);
+                startActivity(intent);
+            }
         }
 
-        /*else if (tv.getCurrentTextColor() == Color.GRAY) {
-            tv.setTextColor(Color.GREEN);
-            tv.setBackgroundColor(Color.GRAY);
-
-            if(tv.getText().equals(R.string.mine)){
-                tv.setTextSize(50);
+        else if(gameStatus==1){
+            if (clickAgain) {
+                Intent intent = new Intent(this, ResultsActivity.class);
+                intent.putExtra("gameStatus", gameStatus);
+                intent.putExtra("seconds", clockCount);
+                startActivity(intent);
             }
+        }
 
-        }*/
-
-       /* else if(tv.getCurrentTextColor() == Color.TRANSPARENT){
-            tv.setTextColor(Color.RED);
-        }*/
-
-        /*else if(view.getId()==2){ // putting flag on cells
-            tv.setText(R.string.flag);
-        }*/
 
         else if(clickAgain==false && modeGame==true && tv.getId()==8 && tv.getCurrentTextColor()!=Color.GRAY){
             tv.setText(R.string.flag);
@@ -454,97 +438,128 @@ public class MainActivity extends AppCompatActivity {
         //if all adjacent neighbors don't have mines, reveal them
 
         while(!allNeighborsChecked) {
-            if (((n % 8) != 7) && cell_tvs.get(n + 1).getId() == 5) { //right side neighbor
-                coastClear = false;
-                break;
+            //top neighbor
+            if(n>7){
+                if(cell_tvs.get(n-8).getId()==5) {
+                    coastClear = false;
+                    break;
+                }
+            }
+            //bottom neighbor
+            if(n<72){
+                if(cell_tvs.get(n+8).getId()==5) {
+                    coastClear = false;
+                    break;
+                }
             }
 
-            if (((n%8)!=0) && cell_tvs.get(n-1).getId() == 5) { //left side neighbor
-                coastClear = false;
-                break;
+            //right neighbor
+            if((n%8)!=7){
+                if(cell_tvs.get(n+1).getId()==5) {
+                    coastClear = false;
+                    break;
+                }
+            }
+            //left neighbor
+            if((n%8)!=0){
+                if(cell_tvs.get(n-1).getId()==5) {
+                    coastClear = false;
+                    break;
+                }
+            }
+            //bottom right neighbor
+            if((n%8)!=7 && (n<72)){
+                if(cell_tvs.get(n+9).getId()==5) {
+                    coastClear = false;
+                    break;
+                }
             }
 
-            if(n>7 && cell_tvs.get(n-8).getId()==5){ //top neighbor
-                coastClear = false;
-                break;
+            //bottom left neighbor
+            if((n%8)!=0 && (n<72)){
+                if(cell_tvs.get(n+7).getId()==5) {
+                    coastClear = false;
+                    break;
+                }
             }
 
-            if (n<=70 && cell_tvs.get(n+8).getId() == 5) { //bottom neighbor
-                coastClear = false;
-                break;
+            //top right neighbor
+            if((n%8)!=7 && (n>7)){
+                if(cell_tvs.get(n-7).getId()==5) {
+                    coastClear = false;
+                    break;
+                }
             }
-            if (n<=70 && ((n%8)!=7) && cell_tvs.get(n+9).getId() == 5) { //bottom right neighbor
-                coastClear=false;
+            //top left neighbor
+            if((n%8)!=0 && (n>7)){
+                if(cell_tvs.get(n-9).getId()==5) {
+                    coastClear = false;
+                    break;
+                }
+            }
 
-                break;
-            }
-            if (n<=70 && ((n%8)!=0) && cell_tvs.get(n+7).getId() == 5) { //bottom left neighbor
-                coastClear=false;
 
-                break;
-            }
-            if (n>=9 && ((n%8)!=0) &&cell_tvs.get(n-9).getId() == 5) { //top left neighbor
-                coastClear=false;
 
-                break;
-            }
-            if (n>=9 && ((n%8)!=7) &&cell_tvs.get(n-7).getId() == 5) { //top right neighbor
-                coastClear=false;
-
-                break;
-            }
 
             allNeighborsChecked = true;
 
             if(coastClear){
 
-                if(((n%8)!=7)){
-                    checkNeighbors.add(n+1);
-                    cell_tvs.get(n + 1).setTextColor(Color.GRAY);
-                    cell_tvs.get(n + 1).setBackgroundColor(Color.LTGRAY);
-                }
-
-                if(((n%8)!=0)){
-                    checkNeighbors.add(n-1);
-                    cell_tvs.get(n - 1).setTextColor(Color.GRAY);
-                    cell_tvs.get(n - 1).setBackgroundColor(Color.LTGRAY);
-                }
-
+                //top neighbor
                 if(n>7){
                     checkNeighbors.add(n-8);
                     cell_tvs.get(n - 8).setTextColor(Color.GRAY);
                     cell_tvs.get(n - 8).setBackgroundColor(Color.LTGRAY);
                 }
-
-                if(n<=70){
+                //bottom neighbor
+                if(n<72){
                     checkNeighbors.add(n+8);
                     cell_tvs.get(n + 8).setTextColor(Color.GRAY);
                     cell_tvs.get(n + 8).setBackgroundColor(Color.LTGRAY);
                 }
 
-                if(n<=70 && ((n%8)!=7)){
+                //right neighbor
+                if((n%8)!=7){
+                    checkNeighbors.add(n+1);
+                    cell_tvs.get(n + 1).setTextColor(Color.GRAY);
+                    cell_tvs.get(n + 1).setBackgroundColor(Color.LTGRAY);
+                }
+                //left neighbor
+                if((n%8)!=0){
+                    checkNeighbors.add(n-1);
+                    cell_tvs.get(n - 1).setTextColor(Color.GRAY);
+                    cell_tvs.get(n - 1).setBackgroundColor(Color.LTGRAY);
+                }
+                //bottom right neighbor
+                if((n%8)!=7 && (n<72)){
                     checkNeighbors.add(n+9);
                     cell_tvs.get(n + 9).setTextColor(Color.GRAY);
                     cell_tvs.get(n + 9).setBackgroundColor(Color.LTGRAY);
                 }
 
-                if(n<=70 && ((n%8)!=0)) {
+                //bottom left neighbor
+                if((n%8)!=0 && (n<72)){
                     checkNeighbors.add(n+7);
                     cell_tvs.get(n + 7).setTextColor(Color.GRAY);
                     cell_tvs.get(n + 7).setBackgroundColor(Color.LTGRAY);
                 }
 
-                if(n>=9 && ((n%8)!=0)) {
+                //top right neighbor
+                if((n%8)!=7 && (n>7)){
+                    checkNeighbors.add(n-7);
+                    cell_tvs.get(n - 7).setTextColor(Color.GRAY);
+                    cell_tvs.get(n - 7).setBackgroundColor(Color.LTGRAY);
+                }
+                //top left neighbor
+                if((n%8)!=0 && (n>7)){
                     checkNeighbors.add(n-9);
                     cell_tvs.get(n - 9).setTextColor(Color.GRAY);
                     cell_tvs.get(n - 9).setBackgroundColor(Color.LTGRAY);
                 }
 
-                if(n>=9 && ((n%8)!=7)) {
-                    checkNeighbors.add(n-7);
-                    cell_tvs.get(n - 7).setTextColor(Color.GRAY);
-                    cell_tvs.get(n - 7).setBackgroundColor(Color.LTGRAY);
-                }
+
+
+
             }
 
 
@@ -821,8 +836,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//finished version 6
-//DFS complete, bugs fixed
+//finished version 7
+//neighbor search for reveal cells fixed
 
 
 
