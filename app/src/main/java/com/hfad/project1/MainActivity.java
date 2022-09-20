@@ -628,7 +628,7 @@ public class MainActivity extends AppCompatActivity {
             mineCount++;
 
             cell_tvs.get(index).setText("");
-            cell_tvs.get(index).setText(R.string.mine);
+            //cell_tvs.get(index).setText(R.string.mine);
             // System.out.println(cell_tvs.get(index).getText());
 
             cell_tvs.get(index).setTextColor(Color.CYAN);
@@ -821,9 +821,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//finished version 3
-//added comment
-//added comment
+//finished version 5
+//lost game fixed
 
 
 
