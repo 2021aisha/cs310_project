@@ -40,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> mineNeighborCount = new ArrayList<String>();
 
+    public ArrayList<Integer> checkNeighbors = new ArrayList<Integer>();
+
+    public ArrayList<Boolean> alreadyVisited = new ArrayList<Boolean>();
+
     //public TextView digMode;
     //public TextView flagMode;
 
@@ -122,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i=0; i<80; i++){
             mineNeighborCount.add(" ");
+            checkNeighbors.add(-1);
+            alreadyVisited.add(false);
         }
         cell_tvs = new ArrayList<TextView>();
 
@@ -318,108 +324,22 @@ public class MainActivity extends AppCompatActivity {
 
         else if(modeGame==false && (tv.getId()!=9)){
 
+
             tv.setTextColor(Color.GRAY);
             tv.setBackgroundColor(Color.LTGRAY);
 
+            int parent = n;
+            checkNeighbors.add(0, n);
 
+            System.out.println("wow");
 
-            boolean coastClear = true;
-
-            boolean allNeighborsChecked = false;
-
-            //if all adjacent neighbors don't have mines, reveal them
-
-            while(!allNeighborsChecked) {
-                if (((n % 8) != 7) && cell_tvs.get(n + 1).getId() == 5) { //right side neighbor
-                    coastClear = false;
-                    break;
-                }
-
-                if (((n%8)!=0) && cell_tvs.get(n-1).getId() == 5) { //left side neighbor
-                    coastClear = false;
-                    break;
-                }
-
-                if(n>7 && cell_tvs.get(n-8).getId()==5){ //top neighbor
-                    coastClear = false;
-                    break;
-                }
-
-                if (n<=70 && cell_tvs.get(n+8).getId() == 5) { //bottom neighbor
-                    coastClear = false;
-                    break;
-                }
-                if (n<=70 && ((n%8)!=7) && cell_tvs.get(n+9).getId() == 5) { //bottom right neighbor
-                    coastClear=false;
-
-                    break;
-                }
-                if (n<=70 && ((n%8)!=0) && cell_tvs.get(n+7).getId() == 5) { //bottom left neighbor
-                    coastClear=false;
-
-                    break;
-                }
-                if (n>=9 && ((n%8)!=0) &&cell_tvs.get(n-9).getId() == 5) { //top left neighbor
-                    coastClear=false;
-
-                    break;
-                }
-                if (n>=9 && ((n%8)!=7) &&cell_tvs.get(n-7).getId() == 5) { //top right neighbor
-                    coastClear=false;
-
-                    break;
-                }
-
-                allNeighborsChecked = true;
-
-                if(coastClear){
-
-                    if(((n%8)!=7)){
-
-                        cell_tvs.get(n + 1).setTextColor(Color.GRAY);
-                        cell_tvs.get(n + 1).setBackgroundColor(Color.LTGRAY);
-                    }
-
-                    if(((n%8)!=0)){
-                        cell_tvs.get(n - 1).setTextColor(Color.GRAY);
-                        cell_tvs.get(n - 1).setBackgroundColor(Color.LTGRAY);
-                    }
-
-                    if(n>7){
-                        cell_tvs.get(n - 8).setTextColor(Color.GRAY);
-                        cell_tvs.get(n - 8).setBackgroundColor(Color.LTGRAY);
-                    }
-
-                    if(n<=70){
-                        cell_tvs.get(n + 8).setTextColor(Color.GRAY);
-                        cell_tvs.get(n + 8).setBackgroundColor(Color.LTGRAY);
-                    }
-
-                    if(n<=70 && ((n%8)!=7)){
-                        cell_tvs.get(n + 9).setTextColor(Color.GRAY);
-                        cell_tvs.get(n + 9).setBackgroundColor(Color.LTGRAY);
-                    }
-
-                    if(n<=70 && ((n%8)!=0)) {
-                        cell_tvs.get(n + 7).setTextColor(Color.GRAY);
-                        cell_tvs.get(n + 7).setBackgroundColor(Color.LTGRAY);
-                    }
-
-                    if(n>=9 && ((n%8)!=0)) {
-                        cell_tvs.get(n - 9).setTextColor(Color.GRAY);
-                        cell_tvs.get(n - 9).setBackgroundColor(Color.LTGRAY);
-                    }
-
-                    if(n>=9 && ((n%8)!=7)) {
-                        cell_tvs.get(n - 7).setTextColor(Color.GRAY);
-                        cell_tvs.get(n - 7).setBackgroundColor(Color.LTGRAY);
-                    }
-                }
-
-
-
-
+            while(checkNeighbors.isEmpty()==false){
+                revealCells(checkNeighbors.get(0));
+                System.out.println("index: " + checkNeighbors.get(0));
             }
+
+
+             System.out.println("wow2");
 
 
            /*  if(clickedAllCells()==true){
@@ -461,7 +381,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        }
+         }
+
 
         if(clickedAllCells()==true){
                    /* grid.setVisibility(View.INVISIBLE);
@@ -511,6 +432,122 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+
+
+    public void revealCells(int n){
+        boolean coastClear = true;
+
+        boolean allNeighborsChecked = false;
+
+        if(alreadyVisited.get(n)==true){
+            return;
+        }
+
+        //if all adjacent neighbors don't have mines, reveal them
+
+        while(!allNeighborsChecked) {
+            if (((n % 8) != 7) && cell_tvs.get(n + 1).getId() == 5) { //right side neighbor
+                coastClear = false;
+                break;
+            }
+
+            if (((n%8)!=0) && cell_tvs.get(n-1).getId() == 5) { //left side neighbor
+                coastClear = false;
+                break;
+            }
+
+            if(n>7 && cell_tvs.get(n-8).getId()==5){ //top neighbor
+                coastClear = false;
+                break;
+            }
+
+            if (n<=70 && cell_tvs.get(n+8).getId() == 5) { //bottom neighbor
+                coastClear = false;
+                break;
+            }
+            if (n<=70 && ((n%8)!=7) && cell_tvs.get(n+9).getId() == 5) { //bottom right neighbor
+                coastClear=false;
+
+                break;
+            }
+            if (n<=70 && ((n%8)!=0) && cell_tvs.get(n+7).getId() == 5) { //bottom left neighbor
+                coastClear=false;
+
+                break;
+            }
+            if (n>=9 && ((n%8)!=0) &&cell_tvs.get(n-9).getId() == 5) { //top left neighbor
+                coastClear=false;
+
+                break;
+            }
+            if (n>=9 && ((n%8)!=7) &&cell_tvs.get(n-7).getId() == 5) { //top right neighbor
+                coastClear=false;
+
+                break;
+            }
+
+            allNeighborsChecked = true;
+
+            if(coastClear){
+
+                if(((n%8)!=7)){
+                    checkNeighbors.add(checkNeighbors.size(), n+1);
+                    cell_tvs.get(n + 1).setTextColor(Color.GRAY);
+                    cell_tvs.get(n + 1).setBackgroundColor(Color.LTGRAY);
+                }
+
+                if(((n%8)!=0)){
+                    checkNeighbors.add(checkNeighbors.size(), n-1);
+                    cell_tvs.get(n - 1).setTextColor(Color.GRAY);
+                    cell_tvs.get(n - 1).setBackgroundColor(Color.LTGRAY);
+                }
+
+                if(n>7){
+                    checkNeighbors.add(checkNeighbors.size(), n-8);
+                    cell_tvs.get(n - 8).setTextColor(Color.GRAY);
+                    cell_tvs.get(n - 8).setBackgroundColor(Color.LTGRAY);
+                }
+
+                if(n<=70){
+                    checkNeighbors.add(checkNeighbors.size(), n+8);
+                    cell_tvs.get(n + 8).setTextColor(Color.GRAY);
+                    cell_tvs.get(n + 8).setBackgroundColor(Color.LTGRAY);
+                }
+
+                if(n<=70 && ((n%8)!=7)){
+                    checkNeighbors.add(checkNeighbors.size(), n+9);
+                    cell_tvs.get(n + 9).setTextColor(Color.GRAY);
+                    cell_tvs.get(n + 9).setBackgroundColor(Color.LTGRAY);
+                }
+
+                if(n<=70 && ((n%8)!=0)) {
+                    checkNeighbors.add(checkNeighbors.size(), n+7);
+                    cell_tvs.get(n + 7).setTextColor(Color.GRAY);
+                    cell_tvs.get(n + 7).setBackgroundColor(Color.LTGRAY);
+                }
+
+                if(n>=9 && ((n%8)!=0)) {
+                    checkNeighbors.add(checkNeighbors.size(), n-9);
+                    cell_tvs.get(n - 9).setTextColor(Color.GRAY);
+                    cell_tvs.get(n - 9).setBackgroundColor(Color.LTGRAY);
+                }
+
+                if(n>=9 && ((n%8)!=7)) {
+                    checkNeighbors.add(checkNeighbors.size(), n-7);
+                    cell_tvs.get(n - 7).setTextColor(Color.GRAY);
+                    cell_tvs.get(n - 7).setBackgroundColor(Color.LTGRAY);
+                }
+            }
+
+
+
+
+        }
+
+        checkNeighbors.remove(0);
+        alreadyVisited.add(n, true);
     }
 
     @SuppressLint("ResourceType")
@@ -779,6 +816,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 //finished version 3
+//added comment
 //added comment
 
 
